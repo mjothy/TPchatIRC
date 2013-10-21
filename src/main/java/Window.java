@@ -33,7 +33,8 @@ public class Window extends JFrame{
 
         chat = new SalleChat();
         chat.setPreferredSize(new Dimension(400,300));
-        chat.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
+        chat.setEditable(false);
+        chat.setLineWrap(true);
         global.add(chat);
 
         users = new ListUsers();
@@ -51,7 +52,7 @@ public class Window extends JFrame{
 
         disconnect = new JButton("Disconnect");
         disconnect.setPreferredSize(new Dimension(150,50));
-        disconnect.addActionListener(new DisconnectListener());
+        disconnect.addActionListener(new DisconnectListener(this));
         global.add(disconnect);
 
         this.setContentPane(global);
@@ -74,27 +75,32 @@ public class Window extends JFrame{
     }
 
     class DisconnectListener implements ActionListener{
+        private Window window;
+        public DisconnectListener(Window window){
+            super();
+            this.window = window;
+        }
         public void actionPerformed(ActionEvent e){
             try {
                 chatable.disconnect(user);
+                window.setVisible(false);
+
             } catch (RemoteException e1) {
                 e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
     }
 
-    public class SalleChat extends JPanel{
-        public void paintComponent(Graphics g){
-            g.setColor(Color.WHITE);
-            g.clearRect(0,0,400,300);
-            g.setColor(Color.black);
+    public class SalleChat extends JTextArea{
+        public void refresh(){
             try {
+                this.setText("");
                 ArrayList<Message> messages = chatable.getHistorique();
                 int j = 1;
                 int bound = messages.size()>11?messages.size()-11:0;
                 for(int i=bound; i<messages.size(); i++){
                     Message message = messages.get(i);
-                    g.drawString(message.getAuthor().name+" <"+message.getDate()+"> "+": "+message.getContenu(), 5, j*20);
+                    this.append(message.getAuthor().name+" <"+message.getDate()+"> "+": "+message.getContenu()+"\n\r");
                     j++;
                 }
             } catch (RemoteException e) {
@@ -106,7 +112,7 @@ public class Window extends JFrame{
     public class ListUsers extends  JPanel{
         public void paintComponent(Graphics g){
             g.setColor(Color.WHITE);
-            g.clearRect(400,0,200,300);
+            g.clearRect(0,0,200,300);
             g.setColor(Color.black);
 
             try {

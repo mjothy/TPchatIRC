@@ -21,7 +21,7 @@ public class TimerPerso extends TimerTask {
     }
 
     public void run() {
-        salleChat.repaint();
+        salleChat.refresh();
         users.repaint();
     }
 }

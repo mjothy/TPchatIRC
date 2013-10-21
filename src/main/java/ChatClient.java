@@ -58,12 +58,6 @@ public class ChatClient {
                     chatServer.disconnect(user);
                 }
 
-                else if(option.equals("who") && user !=null) {
-                    for(User connected : chatServer.getUserList()){
-                        System.out.println(connected.name);
-                    }
-                }
-
                 else {
                     System.out.println("Try again, with one of the keywords : connect ; send ; bye ; who");
                 }
